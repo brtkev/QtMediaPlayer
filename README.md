@@ -1,2 +1,2 @@
 # QtMediaPlayer
-mediaplayer using Qt (pySide2), qml and ffpyplayer
+mediaplayer using python Qt (pySide2), qml and ffpyplayer
