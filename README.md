@@ -24,6 +24,7 @@ direction arrows functions (seek and volumen)
 context menu on fullscreen
 save playlist function
 filebrowser
+subtitle
 
 learn how pipes and streams work so I do not depend on ffpyplayer but insteed in ffmpeg
 

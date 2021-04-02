@@ -9,8 +9,9 @@ Rectangle{
     height: 70
     //CUSTOM PROPERTIES
     property color bgColor: "#1c1d20"
-    property string seekAheadValue : "10"
-    property string seekBackValue : "10"
+    property string seekValue : "10"
+    property alias functions : internal
+    
 
     
     signal mouseExited()
@@ -20,6 +21,30 @@ Rectangle{
     
     
     width: 800
+
+    
+    QtObject {
+        id: internal
+
+        function volumeKeyPressed(value){
+            if (value === true){
+                player.setVolume(0.05, true)
+            }else{
+                player.setVolume(-0.05, true)
+            }
+        }
+
+        function moveKeyPressed(value){
+            if(value === true ){
+                player.setPosition(parseInt(seekValue), true)   
+            }else{
+                player.setPosition(-parseInt(seekValue), true)   
+            }
+
+        }
+    }
+    
+
 
     
     MouseArea {
@@ -149,7 +174,7 @@ Rectangle{
                 btnIconSource: "../../images/png_images/back.png"
 
                 onClicked : {
-                    player.setPosition(-parseInt(seekBackValue), true)   
+                    internal.moveKeyPressed(false)
                 }
 
             }
@@ -180,7 +205,7 @@ Rectangle{
                 btnIconSource: "../../images/png_images/ahead.png"
 
                 onClicked : {
-                    player.setPosition(parseInt(seekAheadValue), true)   
+                    internal.moveKeyPressed(true)
                 }
             }
 

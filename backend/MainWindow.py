@@ -1,11 +1,10 @@
 # This Python file uses the following encoding: utf-8
 from PySide2.QtCore import QObject, Signal, Slot, Property, Qt
 from PySide2.QtGui import QImage, QColor
-import ffpyplayer.pic as ffpic
 
 
-from .Player import Player
-from .ImageDisplay import ImageDisplay
+from backend.PlayerControl import Player
+from backend.ImageDisplay import ImageDisplay
 
 class MainWindow(QObject):
     def __init__(self):

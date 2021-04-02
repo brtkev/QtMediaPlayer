@@ -10,8 +10,7 @@ Menu {
     property color themeBlue: "#00a1f1"
 
     
-    property string seekBackValue : qsTr("10")
-    property string seekAheadValue : qsTr("10")
+    property string seekValue : qsTr("10")
 
     
     signal fullscreenTriggered()
@@ -20,11 +19,11 @@ Menu {
 
     Action { 
         text: qsTr("Jump Back"); 
-        onTriggered : player.setPosition(-parseInt(seekBackValue), true)
+        onTriggered : player.setPosition(-parseInt(seekValue), true)
     }
     Action { 
         text: qsTr("Jump Ahead");  
-        onTriggered : player.setPosition(-parseInt(seekAheadValue), true)
+        onTriggered : player.setPosition(-parseInt(seekValue), true)
     }
     
 

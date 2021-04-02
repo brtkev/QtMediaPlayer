@@ -54,8 +54,8 @@ Rectangle {
             property string titleName : qsTr("No title")
             
 
-            color: "#717393"
             text: titleName
+            color: labelTopInfo.text == "No title" ? "#717393" : "#ffffff"
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
@@ -133,6 +133,8 @@ Rectangle {
             font.pointSize: 10
             anchors.leftMargin: 5
         }
+
+        
     }
 
     Row {

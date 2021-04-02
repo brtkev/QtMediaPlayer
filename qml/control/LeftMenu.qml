@@ -24,15 +24,20 @@ Rectangle {
     signal btnSettingsClicked()
     
     
+    function settingMenuClosed() {
+        btnPlayer.isActiveMenu = true
+        btnSettings.isActiveMenu = false
+    }
+    
 
     PropertyAnimation{
         id: animationMenu
         target: leftMenu
         property: "width"
         to: {
-            if(leftMenu.width == 0) return 70; 
-            else if(leftMenu.width == 70) return 150;
-            else return 0;
+            // if(leftMenu.width == 0) return 70; 
+            if(leftMenu.width == 70) return 150;
+            else return 70;
         }
         duration: 500
         easing.type: Easing.OutQuint
@@ -149,7 +154,7 @@ Rectangle {
     Label {
         id: leftMenuBottomLabel
         color: "#aaacdd"
-        text: qsTr("1.2V")
+        text: qsTr("0.4V")
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: btnSettings.bottom

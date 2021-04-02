@@ -22,10 +22,10 @@ Button {
 
         //MOUSE OVER AND MOUSE CLICK CHANGE COLOR
         property var dynamicColor: if(btnLeftMenu.down){
-                                       btnLeftMenu.down ? btnColorPressed : btnColorDefault
-                                   } else {
-                                       btnLeftMenu.hovered ? btnColorHover : btnColorDefault
-                                   }
+            btnLeftMenu.down ? btnColorPressed : btnColorDefault
+        } else {
+            btnLeftMenu.hovered ? btnColorHover : btnColorDefault
+        }
     }
 
 

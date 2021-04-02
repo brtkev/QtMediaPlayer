@@ -32,6 +32,12 @@ Window {
     //INTERNAL FUNCTIONS
     QtObject{
         id: internal
+        
+        
+        property real speedValue : 1.0        
+        property int playlistState : 0
+        property int seekValue : 10
+        
 
         function maximizeRestore(){
             if(windowStatus == 0){
@@ -115,8 +121,6 @@ Window {
         if (!initialised) {
             initialised = true;
             backend.startBackend()
-
-            
         }
     }
 
@@ -130,12 +134,13 @@ Window {
         playerPage.adaptSize()
     }
 
-
+    
     
     Connections {
         target: backend
         
     }
+
 
     //MainRectangle
     Rectangle {
@@ -152,7 +157,41 @@ Window {
         anchors.leftMargin: windowMargin
         anchors.topMargin: windowMargin
         z:1
+        focus : true
 
+
+        Keys.onPressed : {
+            if(event.key == Qt.Key_MediaPlay || event.key == Qt.Key_MediaPause || event.key == Qt.Key_MediaTogglePlayPause){
+                player.playPause()
+            }else if(event.key == Qt.Key_MediaStop){
+                player.stop()
+            }else if(event.key == Qt.Key_MediaPrevious){
+                player.prev()
+            }else if(event.key == Qt.Key_MediaNext){
+                player.next()
+            }
+        }
+        Keys.onUpPressed : {
+            bottomMenu.functions.volumeKeyPressed(true)
+        }
+        Keys.onVolumeUpPressed : {
+            bottomMenu.functions.volumeKeyPressed(true)
+        }
+        Keys.onDownPressed : {
+            bottomMenu.functions.volumeKeyPressed(false)
+        }
+        Keys.onVolumeDownPressed : {
+            bottomMenu.functions.volumeKeyPressed(false)
+        }
+        Keys.onLeftPressed : {
+            bottomMenu.functions.moveKeyPressed(false)
+        }
+        Keys.onRightPressed : {
+            bottomMenu.functions.moveKeyPressed(true)
+        }
+
+        
+        
 
         Rectangle {
             id: appContainer
@@ -268,8 +307,7 @@ Window {
                         ContextMenu {
                             id: contextMenu
                             
-                            seekAheadValue : settingsPage.seekAheadValue
-                            seekBackValue : settingsPage.seekBackValue
+                            seekValue : internal.seekValue
 
                             onFullscreenTriggered : {
                                 if(mainWindow.windowStatus != 2){
@@ -304,28 +342,42 @@ Window {
 
                     PlayerPage{
                         id : playerPage
-                        
                         anchors.fill: parent
-
-                        
-                        
                     }
 
                     SettingsPage{
                         id : settingsPage
-                        // anchors.fill : parent
+                        
                         visible : false
+                        TopBarButton {
+                            id: btnClose
+                            anchors.right : parent.right
+                            anchors.top: parent.top
+                            btnColorPressed: "#ff007f"
+                            btnIconSource: "../images/svg_images/close_icon.svg"
+                            onClicked: {
+                                settingsPage.visible = false
+                                leftMenu.settingMenuClosed()
+                            }
+                        }
+                        
+                        onPlaybackSpeedChanged : {
+                            internal.speedValue = speedValue
+                        }
+                        onRepeatStateChanged : {
+                            internal.playlistState = state
+                        }
+                        onSeekValueChanged : {
+                            internal.seekValue = seekValue
+                        }
                         
                     }
-                    
-
-
                 }
 
 
 
                 BottomMenu {
-                    id: bottomMenu
+                    id : bottomMenu
                     anchors.left: leftMenu.right
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
@@ -333,8 +385,7 @@ Window {
                     anchors.leftMargin: 0
                     anchors.rightMargin: 0
                     
-                    seekAheadValue : settingsPage.seekAheadValue
-                    seekBackValue : settingsPage.seekBackValue
+                    seekValue : internal.seekValue
 
                     onMouseExited :{
                         if(mainWindow.windowStatus == 2){
@@ -417,8 +468,8 @@ Window {
         DragHandler{
             target: null
             onActiveChanged: if(active){
-                                 mainWindow.startSystemResize(Qt.LeftEdge)
-                             }
+                mainWindow.startSystemResize(Qt.LeftEdge)
+            }
         }
     }
 
@@ -436,8 +487,8 @@ Window {
         DragHandler{
             target: null
             onActiveChanged: if(active){
-                                 mainWindow.startSystemResize(Qt.RightEdge)
-                             }
+                mainWindow.startSystemResize(Qt.RightEdge)
+            }
         }
     }
 
@@ -455,8 +506,8 @@ Window {
         DragHandler{
             target: null
             onActiveChanged: if(active){
-                                 mainWindow.startSystemResize(Qt.BottomEdge)
-                             }
+                mainWindow.startSystemResize(Qt.BottomEdge)
+            }
         }
     }
 

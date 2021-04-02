@@ -6,9 +6,8 @@ import ffpyplayer.pic as ffpic
 import os
 import sys
 
-from .Thread import PlayerStarter
-from .Playlist import Playlist
-
+from backend.PlayerControl.Playlist import Playlist
+from backend.PlayerControl.PlayerStarter import PlayerStarter
 
 class Player(QObject):
     durationChanged = Signal(int)
@@ -185,13 +184,28 @@ class Player(QObject):
     def setPlaybackMode(self, mode : int) -> None: self.playlist.setPlaybackMode(mode)
 
     @Slot(float)
-    def setVolume(self, vol : float):
+    @Slot(float, bool)
+    def setVolume(self, vol : float, relative : bool = False):
+        """changes player volume
+
+        Args:
+            vol (float): new Volumen
+            relative (bool, optional): if true vol an add/sub of last volumen. Defaults to False.
+        """
+        if relative: 
+            vol = self._volume + vol
+            if vol > 1.0:
+                vol = 1.0
+            elif vol < 0:
+                vol = 0
+
         self._volume = vol
         self.volumeChanged.emit(vol)
         if self._mute: self._mute = False
         if self._core != None: self._core.set_volume(vol)
 
-    def changePlaybackRate(self, rate : float) -> None:
+    @Slot(float)
+    def setPlaybackRate(self, rate : float) -> None:
         self._playbackRate = rate
         if self._core != None:
             self.__startPlayer(self._filename, True)
