@@ -170,7 +170,7 @@ Rectangle {
             SettingsComboBox{
                 id : itemRight2
                 anchors.top: itemRight1.bottom
-
+    
                 model: [
                     { text: "disabled", value: 0 },
                     { text: "repeat one", value: 1 },
@@ -205,6 +205,11 @@ Rectangle {
     }
     Connections{
         target: player
+
+        
+        function onPlaybackModeChanged(mode) {
+            itemRight2.currentIndex = mode
+        }
     }
 
 }

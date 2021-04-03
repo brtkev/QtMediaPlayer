@@ -3,9 +3,10 @@ import QtQuick.Controls 2.15
 
 // import "control"
 
-Menu {
+MenuTemplate {
     id: menu
-    property color themeBlack: "#2c313c"
+    property color themeBlack: "#1c1d20"
+    property color themeDarkBlue: "#2c313c"
     property color themeGray: "#23272E"
     property color themeBlue: "#00a1f1"
 
@@ -76,7 +77,7 @@ Menu {
     }
 
 
-    Menu {
+    MenuTemplate {
         title: qsTr("playback Mode")
 
         Action {
@@ -91,33 +92,6 @@ Menu {
             text : qsTr("repeat All")
             onTriggered : player.setPlaybackMode(2)
         }
-        
-        background: Rectangle {
-            implicitWidth: 170
-            implicitHeight: 40
-            color: themeBlack
-            border.color: themeGray
-            radius: 2
-        }
-        
-        delegate : ContextMenuDelegate{
-
-        }
-    }
-
-    topPadding: 2
-    bottomPadding: 2
-
-    delegate: ContextMenuDelegate {
-
-    }
-
-    background: Rectangle {
-        implicitWidth: 170
-        implicitHeight: 40
-        color: themeBlack
-        border.color: themeGray
-        radius: 2
     }
 
     

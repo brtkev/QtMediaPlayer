@@ -4,6 +4,7 @@ import QtQuick.Window 2.15
 import QtGraphicalEffects 1.15
 
 import "control"
+import "control/menu"
 import "pages"
 
 

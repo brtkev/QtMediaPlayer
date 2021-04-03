@@ -45,7 +45,7 @@ class Player(QObject):
         self.__timer.setTimerType(Qt.PreciseTimer)
         self.__timer.setSingleShot(True)
         self.playlist.indexChanged.connect(lambda index : self.__startPlayer(self.playlist.url(index)))  
-        self.playlist.playbackModeChanged.connect( lambda mode : self.playbackModeChanged(mode))
+        self.playlist.playbackModeChanged.connect(self.playbackModeChanged.emit)
         # self.playlist.playlistChanged.connect(lambda : self.__startPlayer(self.playlist.url(0)))
         self.__playerState = Player.pausedStated
         # self.__setupPlayer()
@@ -163,6 +163,10 @@ class Player(QObject):
     @Slot(list)
     def fromUrls(self, urls):
         self.playlist.setFromList(urls)
+
+    @Slot(str)
+    def fromDir(self, dir):
+        self.playlist.setFromDir(dir)
 
     def addMedia(self, _object : str):
         self.playlist.append(_object)
@@ -294,16 +298,4 @@ class Player(QObject):
                         return [frame, val]
                     count += 1
     
-
-    @staticmethod
-    def filterFiles( file : str, filter : list):
-        index = file.rfind('.')
-        return file[index:] in filter
-
-    # def setupMediaPlayer(parentWidget : Widget, fileNames : list):
-    #     if fileNames:
-    #         #setup the playlist for the mediaPlayer
-    #         parentWidget.player.setPlaylist(fileNames)
-    #         #activate the plat btn
-    #         parentWidget.mediaPlayerBar.playBtn.setEnabled(True)
 

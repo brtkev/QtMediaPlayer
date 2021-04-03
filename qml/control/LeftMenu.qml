@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Dialogs 1.3
+
+
+import "menu"
 
 Rectangle {
     id: leftMenu
@@ -81,41 +83,18 @@ Rectangle {
             btnIconSource: "../../images/svg_images/open_icon.svg"
 
             onClicked : {
-                fileOpen.open()
+                // fileOpen.open()
+                fileMenu.popup(btnOpen, btnOpen.width,0)
             }
 
-            Connections {
-                target: player
-                    
+            
+
+            FileMenu {
+                id : fileMenu
+                focus : false
             }
             
-            FileDialog{
-                id : fileOpen
-                title : "Please choose your files"
-                folder : shortcuts.desktop
-                selectMultiple : true
-                nameFilters : ["Media Files(*.avi *.mp3 *.mp4  *.mkv)"]
-                onAccepted: {
-                    let urls = []
-                    fileOpen.fileUrls.forEach(
-                        (url, index) => {
-                            urls.push(url.toString().slice(8)); 
-                        }
-                    )
-
-                    player.fromUrls(urls)
-                    
-                }
-                onRejected: {
-                    console.log("Canceled")
-                    // Qt.quit()
-                }
-
-                
-                
-                
-
-            }
+            
             
 
         }
@@ -167,4 +146,7 @@ Rectangle {
         anchors.leftMargin: 0
         anchors.bottomMargin: 20
     }
+
+
+    
 }

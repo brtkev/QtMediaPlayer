@@ -3,8 +3,8 @@ import QtQuick.Controls 2.15
 
 
 MenuItem {
-
-    property color themeBlack: "#2c313c"
+    property color themeBlack: "#1c1d20"
+    property color themeDarkBlue: "#2c313c"
     property color themeGray: "#23272E"
     property color themeBlue: "#00a1f1"
 
@@ -37,7 +37,7 @@ MenuItem {
             height: 26
             anchors.centerIn: parent
             visible: menuItem.checkable
-            border.color: themeBlue
+            border.color: themeBlack
             radius: 3
             Rectangle {
                 width: 14

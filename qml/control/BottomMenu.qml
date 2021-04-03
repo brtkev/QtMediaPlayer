@@ -8,8 +8,8 @@ Rectangle{
     id: container
     height: 70
     //CUSTOM PROPERTIES
-    property color bgColor: "#1c1d20"
-    property string seekValue : "10"
+    property color themeBlack: "#1c1d20"
+    property int seekValue : 10
     property alias functions : internal
     
 
@@ -36,9 +36,9 @@ Rectangle{
 
         function moveKeyPressed(value){
             if(value === true ){
-                player.setPosition(parseInt(seekValue), true)   
+                player.setPosition(seekValue, true)   
             }else{
-                player.setPosition(-parseInt(seekValue), true)   
+                player.setPosition(-seekValue, true)   
             }
 
         }
@@ -59,7 +59,7 @@ Rectangle{
 
             width: 100
             height: 30
-            color:  bgColor
+            color:  themeBlack
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: buttonBar.top

@@ -1,5 +1,6 @@
 
 from PySide2.QtCore import QObject, Signal
+import os
 
 
 class Playlist(QObject):
@@ -19,17 +20,19 @@ class Playlist(QObject):
         super().__init__()
         self.__playbackMode = Playlist.sequential
 
-    def __append(self, _item ) -> None:
-        self.__urls.append(_item)
-
     def setFromList(self, _list : list, new : bool = True ) -> None:
         if new:
             self.__urls.clear()
         for _item in _list:
-            self.__append(_item)
+            self.__urls.append(_item)
 
-        self.playlistChanged.emit()
-        if new: self.indexChanged.emit(self.__index)
+        if len(self.__urls) > 0:
+            self.playlistChanged.emit()
+            if new: self.indexChanged.emit(self.__index)
+
+    def setFromDir(self, _dir : str):
+        urls = self.__getMediaFromDir(_dir)
+        self.setFromList(urls)
 
     def changePlaybackMode(self):
         if self.__playbackMode == Playlist.repeatAll:
@@ -99,3 +102,26 @@ class Playlist(QObject):
         return self.__playbackMode
 
     def urls(self) -> list: return self.__urls
+
+    def __getMediaFromDir(self, __dir : str) -> list:
+        if __dir == '': return []
+        fileDirs = [__dir]
+        filepaths = []
+        while fileDirs:
+            currentDir = fileDirs.pop(0)
+            fileNames = os.listdir(currentDir)
+
+            filterlist = list(filter( lambda file: self.__filterFiles(file, ['.mp3', '.mp4', '.avi']), fileNames))
+            for name in filterlist:
+                filepaths.append(currentDir+'/'+name)
+
+            for file in fileNames:
+                newdir = currentDir+'/'+file
+                if os.path.isdir(newdir):
+                    fileDirs.append(newdir)
+
+        return filepaths
+
+    def __filterFiles(self, file : str, filter : list):
+            index = file.rfind('.')
+            return file[index:] in filter
