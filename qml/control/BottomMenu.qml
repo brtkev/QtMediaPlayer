@@ -36,9 +36,9 @@ Rectangle{
 
         function moveKeyPressed(value){
             if(value === true ){
-                player.setPosition(seekValue, true)   
+                player.setPosition(progressBar.value + seekValue)
             }else{
-                player.setPosition(-seekValue, true)   
+                player.setPosition(progressBar.value - seekValue)
             }
 
         }
@@ -56,6 +56,8 @@ Rectangle{
 
         Rectangle {
             id: sliderBar
+
+            
 
             width: 100
             height: 30
@@ -78,7 +80,9 @@ Rectangle{
                 anchors.bottomMargin: 5
                 anchors.rightMargin: 10
                 anchors.leftMargin: 10
-                value: 0.0
+                value: 0.
+                // focusPolicy : Qt.NoFocus
+                stepSize : seekValue
                 
                 onMoved : player.setPosition(progressBar.value)
 
