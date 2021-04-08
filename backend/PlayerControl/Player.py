@@ -10,6 +10,8 @@ from backend.PlayerControl.Playlist import Playlist
 from backend.PlayerControl.PlayerStarter import PlayerStarter
 
 class Player(QObject):
+    """mediaplayer made with qt and 
+    """
     durationChanged = Signal(int)
     positionChanged = Signal(int)
     stateChanged = Signal(int)
@@ -39,16 +41,17 @@ class Player(QObject):
 
     def __init__(self) -> None:
         super().__init__()
+        #player options 
         self.__ff_opts = {'paused': False, 'sync' : 'video'}
+        #timer init
         self.__timer = QTimer()
         self.__timer.timeout.connect(self.__update)
         self.__timer.setTimerType(Qt.PreciseTimer)
         self.__timer.setSingleShot(True)
+        #playlist signals
         self.playlist.indexChanged.connect(lambda index : self.__startPlayer(self.playlist.url(index)))  
         self.playlist.playbackModeChanged.connect(self.playbackModeChanged.emit)
-        # self.playlist.playlistChanged.connect(lambda : self.__startPlayer(self.playlist.url(0)))
         self.__playerState = Player.pausedStated
-        # self.__setupPlayer()
 
 
     def __setupPlayer(self) -> None:
@@ -76,6 +79,12 @@ class Player(QObject):
         
 
     def __startPlayer(self, filename : str, seekStart : bool = False) -> None:
+        """starts the player
+
+        Args:
+            filename (str): path to the file dir
+            seekStart (bool, optional): if the player need to start at a specific point. Defaults to False.
+        """
         self.__timer.stop()
         self.__setupPlayer()
         self._filename = filename
@@ -85,6 +94,11 @@ class Player(QObject):
 
     
     def __setup_ffOpts(self, seekStart : bool) -> None:
+        """setup player options
+
+        Args:
+            seekStart (bool): if the player need to start at a specific point
+        """
         self.__ff_opts['volume'] = self._volume
         self.__ff_opts['vf'] = ["setpts={}*PTS".format(1/self._playbackRate)]
         self.__ff_opts['af'] = "atempo={}".format(self._playbackRate)
@@ -96,6 +110,11 @@ class Player(QObject):
 
                 
     def __update(self, force = False) -> None:
+        """get a new frame everytime the timer says so, sends the frame to the player ui
+
+        Args:
+            force (bool, optional): in case the frame is need but the player is paused. Defaults to False.
+        """
         if force: 
             frame, val = self.__getTrueFrame()
         else:
@@ -112,6 +131,14 @@ class Player(QObject):
             self.__timer.start(val*1000)
             
     def __getQPixmap(self, image : ffpic.Image) -> QPixmap:
+        """change from ffpic.image to QPixmap
+
+        Args:
+            image (ffpic.Image): image
+
+        Returns:
+            QPixmap: QPixmap
+        """
         data = image.to_bytearray()[0]
         w, h = image.get_size()
         img = QImage(data, w, h, QImage.Format_RGB888).copy()
@@ -121,6 +148,8 @@ class Player(QObject):
 
 
     def play(self) -> None:
+        """sets play to the player
+        """
         if self._core == None: return
         self._core.set_pause(False)
         self.__timer.start(0.01*1000)
@@ -128,6 +157,8 @@ class Player(QObject):
         self.stateChangedSignal()
         
     def pause(self) -> None:
+        """sets pause to the player
+        """
         if self._core == None: return 
         self._core.set_pause(True)
         self.__timer.stop()
@@ -136,6 +167,8 @@ class Player(QObject):
 
     @Slot()
     def stop(self) -> None:
+        """stops the player completely
+        """
         if self._core == None: return
         self.__timer.stop()
         self._core.set_pause(True)
@@ -146,6 +179,8 @@ class Player(QObject):
         
     @Slot()
     def playPause(self) -> None:
+        """pauses or plays the player depending on its current state
+        """
         if self.__playerState == Player.playingState:
             self.pause()
         else:
@@ -153,22 +188,41 @@ class Player(QObject):
 
     @Slot()
     def next(self) -> None:
+        """next media in the playlist
+        """
         self.playlist.next()
 
     @Slot()
     def prev(self) -> None:
+        """previous media on the playlist
+        """
         self.playlist.prev()
 
 
     @Slot(list)
     def fromUrls(self, urls):
+        """makes a playlist from a list of dirs
+
+        Args:
+            urls (list): list of dirs
+        """ 
         self.playlist.setFromList(urls)
 
     @Slot(str)
     def fromDir(self, dir):
+        """makes a playlist from a dir
+
+        Args:
+            dir (str): parent folder to all media in the playlist
+        """
         self.playlist.setFromDir(dir)
 
     def addMedia(self, _object : str):
+        """DO NO USE. add media to the playlist, unused and needs reimplementation 
+
+        Args:
+            _object (str): filepath
+        """
         self.playlist.append(_object)
         if len(self.playlist) == 1:
             self.__startPlayer(self.playlist[self.playlist.index()])
@@ -176,6 +230,14 @@ class Player(QObject):
     @Slot(int)
     @Slot(int, bool)
     def setPosition(self, pos, relative = False, by_bytes = False, accurate = False):
+        """take the player to an specific position
+
+        Args:
+            pos (int): new position
+            relative (bool, optional): take the player to the position relative to the current one. Defaults to False.
+            by_bytes (bool, optional): makes it more accurate(needs testing). Defaults to False.
+            accurate (bool, optional): also makes it more accurate(needs testing). Defaults to False.
+        """
         if self._core == None: return    
         if type(pos) == str: pos = int(pos)
         self._core.seek(pos, relative, by_bytes, accurate)
@@ -210,6 +272,11 @@ class Player(QObject):
 
     @Slot(float)
     def setPlaybackRate(self, rate : float) -> None:
+        """sets the speed for the player by restarting it with a new speed
+
+        Args:
+            rate (float): x times speed
+        """ 
         self._playbackRate = rate
         if self._core != None:
             self.__startPlayer(self._filename, True)
@@ -229,6 +296,7 @@ class Player(QObject):
 
     @Slot()
     def openFiles(self):
+        """ DO NOT USE, should delete it"""
         desktop = os.path.normpath(os.path.expanduser("~/Desktop"))
         filter = "media(*.avi *.mp3 *.mp4  *.mkv)"
         urls, filter = QFileDialog.getOpenFileNames(None, "Abrir Video", desktop, filter)
@@ -281,6 +349,11 @@ class Player(QObject):
         self.aspectRatioChanged.emit(w/h)
 
     def __getTrueFrame(self):
+        """gets the next exact frame, used when paused and needs a frame to show
+
+        Returns:
+            [frame]: [player frame]
+        """
         if not self._core.get_pause(): return self._core.get_frame(True)
         v = self._core.get_volume()
         self._core.set_volume(0)

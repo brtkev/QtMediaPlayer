@@ -1,4 +1,3 @@
-from typing import Sized, SupportsAbs
 from PySide2.QtCore import QObject, SIGNAL, Slot, Signal, QPoint, QSize, Qt, Property
 from PySide2.QtQuick import QQuickPaintedItem
 from PySide2.QtGui import QImage, QPainter, QPixmap
@@ -18,15 +17,19 @@ class Singleton(type(QObject)):
 
 
 class ImageDisplay(QQuickPaintedItem, metaclass = Singleton):
-
-
-
+    """qml reimplementation of qquickpainteditem, single instace, used to show a pixmap,
+        most likely the media images
+    """
     def __init__(self, *args) -> None:
         super().__init__(*args)
         self.setRenderTarget(QQuickPaintedItem.FramebufferObject)
         self._image = QPixmap()
  
     def paint(self, painter: QPainter) -> None:
+        """paints itself with the pixmap selected, in the space selected.
+
+            this function gets called automaticly with update() is called
+        """
         painter.drawPixmap(self.contentsBoundingRect().toRect(), self._image)
 
     def updateImage(self, image : QPixmap):
