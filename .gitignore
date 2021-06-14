@@ -9,6 +9,7 @@ __pycache__/
 .vscode/
 
 # Distribution / packaging
+.qt_for_python/
 .venv/
 .Python
 build/
