@@ -1,8 +1,7 @@
 # QtMediaPlayer
-mediaplayer using python Qt (pySide2), qml and ffpyplayer
+python mediaplayer using python Qt (pySide2), qml and ffpyplayer
 
-pip install PyQt5
-pip install ffpyplayer
+pip install -r requirements.txt
 
 to Run the program.
 $python main.py
